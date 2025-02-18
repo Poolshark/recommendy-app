@@ -1,5 +1,7 @@
-import VoiceAssistant from "@/components/VoiceAssistant";
-import { Text, View } from "react-native";
+
+
+import { VoiceAssistant } from "@/components/VoiceAssistant";
+import { View } from "react-native";
 
 
 export default function Index() {
