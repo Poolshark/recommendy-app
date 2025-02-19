@@ -1,6 +1,6 @@
 export type ConversationProps = {
   messages: {
+    request: string;
     question: string;
-    answer: string;
   }[];
 };

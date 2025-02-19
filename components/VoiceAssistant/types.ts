@@ -1,4 +1,13 @@
-import type { SetStateAction } from "react";
+import type { speak } from 'expo-speech';
+import type Voice from '@react-native-voice/voice';
+import type { Dispatch, SetStateAction } from "react";
+
+export type Recommendation = {
+  name: string;
+  address: string;
+  rating: number;
+  priceLevel?: string;
+}
 
 export type ConversationType = {
   user: {
@@ -19,9 +28,18 @@ export type ConversationType = {
   }
 }
 
-export type ResetVoiceAssistantProps = {  
-  setError: (value: SetStateAction<string>) => void;
-  setIsLoading: (value: SetStateAction<boolean>) => void;
-  setIsStarted: (value: SetStateAction<boolean|undefined>) => void;
-  setConversation: (value: SetStateAction<ConversationType[]>) => void;
+export type ResetVoiceAssistantProps = {
+  speak: typeof speak;
+  setError: Dispatch<SetStateAction<string>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setIsStarted: Dispatch<SetStateAction<boolean | undefined>>;
+  setConversation: Dispatch<SetStateAction<ConversationType[]>>;
+  setRecommendation: Dispatch<SetStateAction<Recommendation | null>>;
+};
+
+export type StartListeningProps = {
+  Voice: typeof Voice;
+  setError: Dispatch<SetStateAction<string>>;
+  setIsListening: Dispatch<SetStateAction<boolean>>;
+  setRecognizedText: Dispatch<SetStateAction<string>>
 };

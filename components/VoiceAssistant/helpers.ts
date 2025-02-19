@@ -1,7 +1,7 @@
 import { PermissionsAndroid, Platform } from "react-native";
 
 import type { SetStateAction } from "react";
-import type { ResetVoiceAssistantProps } from "./types";
+import type { ResetVoiceAssistantProps, StartListeningProps } from "./types";
 
 // Request permissions on Android
 export const requestPermission = async (setError: (value: SetStateAction<string>) => void) => {
@@ -45,9 +45,26 @@ export const resetVoiceAssistant = async (props: ResetVoiceAssistantProps) => {
     props.setConversation([{ user: { id: 'user-1', text: "", name: "John Doe" }, assistant: data }]);
     props.setIsStarted(true);
     props.setIsLoading(false);
+    props.setRecommendation(null);
+    props.speak("Hello, John! " + data.response, {
+      language: 'en',
+    });
 
   } catch (error) {
     props.setError(`Error resetting voice assistant: ${(error as Error).message}`);
     props.setIsLoading(false);
+  }
+};
+
+export const startListening = async (props: StartListeningProps) => {
+  try {
+    props.setError('');
+    props.setIsListening(true);
+    props.setRecognizedText('');
+    await props.Voice.start('en-US');
+  } catch (error) {
+    console.error('Error starting voice:', error);
+    props.setError('Failed to start voice recognition');
+    props.setIsListening(false);
   }
 };

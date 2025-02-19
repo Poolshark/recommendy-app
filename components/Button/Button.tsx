@@ -15,6 +15,6 @@ export const Button = (props: ButtonProps) => {
           <Ionicons name="recording" size={36} color="white" /> : 
           <Ionicons name="mic" size={36} color="white" />
         }
-      </TouchableOpacity>
+    </TouchableOpacity>
   )
 }

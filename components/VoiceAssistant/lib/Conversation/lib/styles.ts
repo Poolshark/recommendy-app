@@ -6,5 +6,18 @@ export const styles = StyleSheet.create({
     borderColor: "black",
     borderRadius: 10,
     padding: 10,
+    overflow: "hidden",
+    width: "50%",
+    marginTop: 5,
+
   },
+  user: {
+    marginRight: 5,
+    alignSelf: "flex-end",
+    backgroundColor: "#a2ef63",
+  },
+  assistant: {
+    marginLeft: 5,
+    backgroundColor: "#ededed",
+  }
 });

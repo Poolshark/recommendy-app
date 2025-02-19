@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, Platform, PermissionsAndroid, View } from 'react-native';
+import { View } from 'react-native';
 import * as Speech from 'expo-speech';
 import Voice from '@react-native-voice/voice';
 import { Container } from './lib/Containter';
 import { Interaction } from './lib/Interaction';
 import { Conversation } from './lib/Conversation';
-import { requestPermission, resetVoiceAssistant } from './helpers';
+import { requestPermission, resetVoiceAssistant, startListening } from './helpers';
 
-import type { ConversationType } from './types';
+import type { ConversationType, Recommendation } from './types';
 import { StartScreen } from './lib/StartScreen/StartScreen';
 
-interface Recommendation {
-  name: string;
-  address: string;
-  rating: number;
-  priceLevel?: string;
-}
 
 export const VoiceAssistant = () => {
   const [recognizedText, setRecognizedText] = useState('');
@@ -52,23 +46,18 @@ export const VoiceAssistant = () => {
   useEffect(() => {
     if (isStarted === false) {
       setIsLoading(true);
-      resetVoiceAssistant({ setError, setIsLoading, setIsStarted, setConversation });
+      resetVoiceAssistant({ 
+        setError, 
+        setIsLoading, 
+        setIsStarted, 
+        setConversation, 
+        setRecommendation,
+        speak: Speech.speak,
+      });
     }
   }, [isStarted]);
 
-  const startListening = async () => {
-    try {
-      setError('');
-      setIsListening(true);
-      setRecognizedText('');
-      setRecommendation(null);
-      await Voice.start('en-US');
-    } catch (error) {
-      console.error('Error starting voice:', error);
-      setError('Failed to start voice recognition');
-      setIsListening(false);
-    }
-  };
+  
 
   const stopListening = async () => {
     try {
@@ -86,14 +75,17 @@ export const VoiceAssistant = () => {
 
   const sendQueryToServer = async (query: string) => {
     try {
-      const response = await fetch(`${process.env.EXPO_RECOMMENDY_API}/conversation`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: 'user-1',
-          text: query 
-        }),
-      });
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_RECOMMENDY_API}/conversation`, 
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: 'user-1',
+            text: query 
+          })
+        }
+      );
 
       const data = await response.json();
       console.log(data);
@@ -126,13 +118,20 @@ export const VoiceAssistant = () => {
       <View>
         <Conversation messages={conversation.map(c => {
           return {
-            question: c.assistant.response,
-            answer: c.user.text,
+            request: c.user.text,
+            question: c.assistant.next_question,
           }
         })} />
         <Interaction 
           isListening={isListening}
-          onPressIn={startListening}
+          onPressIn={
+            () => startListening({ 
+              Voice, 
+              setError, 
+              setIsListening, 
+              setRecognizedText 
+            }
+          )}
           onPressOut={stopListening}
         />
       </View>
@@ -140,53 +139,3 @@ export const VoiceAssistant = () => {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  button: {
-    padding: 20,
-    backgroundColor: '#1e90ff',
-    borderRadius: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  buttonListening: {
-    backgroundColor: '#ff4444',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  text: {
-    marginTop: 12,
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  recommendationContainer: {
-    marginTop: 20,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
-  },
-  recommendationTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-}); 
