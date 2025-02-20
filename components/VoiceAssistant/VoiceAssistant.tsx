@@ -1,24 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View } from 'react-native';
 import * as Speech from 'expo-speech';
 import Voice from '@react-native-voice/voice';
 import { Container } from './lib/Containter';
 import { Interaction } from './lib/Interaction';
 import { Conversation } from './lib/Conversation';
-import { requestPermission, resetVoiceAssistant, startListening } from './helpers';
+import { requestPermission, resetVoiceAssistant, sendQuery } from './helpers';
 
 import type { ConversationType, Recommendation } from './types';
 import { StartScreen } from './lib/StartScreen/StartScreen';
+import { userStore } from '@/store';
 
 
 export const VoiceAssistant = () => {
-  const [recognizedText, setRecognizedText] = useState('');
+  const [recognisedText, setRecognisedText] = useState('');
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isStarted, setIsStarted] = useState<boolean | undefined>(undefined);
   const [conversation, setConversation] = useState<ConversationType[]>([]);
   const [error, setError] = useState<string>('');
+  const { user } = userStore();
 
   useEffect(() => {
     // Initialize voice recognition handlers
@@ -30,7 +32,7 @@ export const VoiceAssistant = () => {
     };
     Voice.onSpeechResults = (e: any) => {
       if (e.value && e.value.length > 0) {
-        setRecognizedText(e.value[0]);
+        setRecognisedText(e.value[0]);
       }
     };
 
@@ -53,56 +55,29 @@ export const VoiceAssistant = () => {
         setConversation, 
         setRecommendation,
         speak: Speech.speak,
+        userName: user || "Mr. Crumble",
       });
     }
   }, [isStarted]);
 
-  
-
-  const stopListening = async () => {
+  const sendQueryToServer = useCallback(async (query: string) => {
     try {
-      await Voice.stop();
-      setIsListening(false);
-      if (recognizedText) {
-        setIsLoading(true);
-        sendQueryToServer(recognizedText);
+
+      const userObj = {
+        id: user?.replace(" ", "-").toLowerCase() || "mr-crumble",
+        name: user || "Mr. Crumble",
       }
-    } catch (error) {
-      console.error('Error stopping voice:', error);
+
+      const data = await sendQuery(query, userObj.id);
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setConversation([...conversation, { user: { id: userObj.id, text: query, name: userObj.name }, assistant: data }]);
       setIsLoading(false);
-    }
-  };
-
-  const sendQueryToServer = async (query: string) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_RECOMMENDY_API}/conversation`, 
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: 'user-1',
-            text: query 
-          })
-        }
-      );
-
-      const data = await response.json();
-      console.log(data);
-
-      setConversation([...conversation, { user: { id: 'user-1', text: query, name: "John Doe" }, assistant: data }]);
-      // setRecommendation(data);
-      setIsLoading(false);
-
-      const speechText = data.response;
-
-      // const speechText = `I recommend ${data.name}. It has a rating of ${data.rating} stars${
-      //   data.priceLevel ? ` and is ${data.priceLevel}` : ''
-      // }. You can find it at ${data.address}.`;
-
-      console.log("SPEECH", speechText);
       
-      Speech.speak(speechText, {
+      Speech.speak(data.next_question, {
         language: 'en',
       });
     } catch (err) {
@@ -110,7 +85,38 @@ export const VoiceAssistant = () => {
       setIsLoading(false);
       Speech.speak('Sorry, I encountered an error while searching for restaurants.');
     }
-  };
+  }, [user, conversation]); 
+
+  const startListening = useCallback(async () => {
+    try {
+      setError('');
+      setIsListening(true);
+      setRecognisedText('');
+      await Voice.start('en-US');
+    } catch (error) {
+      console.error('Error starting voice:', error);
+      setError('Failed to start voice recognition');
+      setIsListening(false);
+    }
+  }, []);
+
+  const stopListening = useCallback(async () => {
+    try {
+      await Voice.stop();
+      setIsListening(false);
+      
+      if (recognisedText) {
+        setIsLoading(true);
+        sendQueryToServer(recognisedText);
+      }
+    } catch (error) {
+      console.error('Error stopping voice:', error);
+      setIsLoading(false);
+    }
+  }, [recognisedText]);
+
+
+
 
   return (
     <Container error={error}>
@@ -124,15 +130,9 @@ export const VoiceAssistant = () => {
         })} />
         <Interaction 
           isListening={isListening}
-          onPressIn={
-            () => startListening({ 
-              Voice, 
-              setError, 
-              setIsListening, 
-              setRecognizedText 
-            }
-          )}
+          onPressIn={startListening}
           onPressOut={stopListening}
+          setIsStarted={setIsStarted}
         />
       </View>
     }

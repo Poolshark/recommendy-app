@@ -1,10 +1,14 @@
-
-
-import { VoiceAssistant } from "@/components/VoiceAssistant";
 import { View } from "react-native";
+import { userStore } from "@/store/store";
+import { UserForm } from "@/components/UserForm";
+import { VoiceAssistant } from "@/components/VoiceAssistant";
+
 
 
 export default function Index() {
+
+  const { user } = userStore();
+
   return (
     <View
       style={{
@@ -12,8 +16,11 @@ export default function Index() {
         justifyContent: "center",
         alignItems: "center",
       }}
-    >
-      <VoiceAssistant />
+    > 
+      { user === undefined ? 
+          <UserForm /> 
+        : <VoiceAssistant />
+      }
     </View>
   );
 }

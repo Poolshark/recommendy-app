@@ -29,6 +29,7 @@ export type ConversationType = {
 }
 
 export type ResetVoiceAssistantProps = {
+  userName: string;
   speak: typeof speak;
   setError: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
@@ -43,3 +44,24 @@ export type StartListeningProps = {
   setIsListening: Dispatch<SetStateAction<boolean>>;
   setRecognizedText: Dispatch<SetStateAction<string>>
 };
+
+
+export interface SendQueryToServerProps {
+  user: {
+    id: string;
+    name: string;
+  }
+  query: string;
+  speak: typeof speak;
+  conversation: ConversationType[];
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setConversation: Dispatch<SetStateAction<ConversationType[]>>;
+};
+
+export interface StopListeningProps extends SendQueryToServerProps {
+  stop: typeof Voice.stop;
+  recognisedText: string;
+  setIsListening: Dispatch<SetStateAction<boolean>>;
+};
+
+

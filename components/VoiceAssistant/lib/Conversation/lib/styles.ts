@@ -7,9 +7,8 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     overflow: "hidden",
-    width: "50%",
+    width: "80%",
     marginTop: 5,
-
   },
   user: {
     marginRight: 5,

@@ -5,11 +5,14 @@ import { styles } from "./styles"
 import type { ButtonProps } from "./types"
 
 export const Button = (props: ButtonProps) => {
+
+  const { onPressIn, onPressOut, isListening } = props;
+
   return (
     <TouchableOpacity
-        style={[styles.button, props.isListening && styles.listening]}
-        onPressIn={props.onPressIn}
-        onPressOut={props.onPressOut}
+        style={[styles.button, isListening && styles.listening]}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
       >
         {props.isListening ?  
           <Ionicons name="recording" size={36} color="white" /> : 
