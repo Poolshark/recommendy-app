@@ -30,12 +30,6 @@ export type ConversationType = {
 
 export type ResetVoiceAssistantProps = {
   userName: string;
-  speak: typeof speak;
-  setError: Dispatch<SetStateAction<string>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  setIsStarted: Dispatch<SetStateAction<boolean | undefined>>;
-  setConversation: Dispatch<SetStateAction<ConversationType[]>>;
-  setRecommendation: Dispatch<SetStateAction<Recommendation | null>>;
 };
 
 export type StartListeningProps = {

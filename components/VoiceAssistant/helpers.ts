@@ -30,36 +30,16 @@ export const requestPermission = async (setError: (value: SetStateAction<string>
 
 
 export const resetVoiceAssistant = async (props: ResetVoiceAssistantProps) => {
-  const { userName, setConversation, setIsStarted, setIsLoading, setRecommendation, speak, setError } = props;
-  try {
-    const user = {
-      id: userName.replace(" ", "-").toLowerCase(),
-      name: userName,
-    }
+  const { userName } = props;
 
-    const response = await fetch(process.env.EXPO_PUBLIC_RECOMMENDY_API || "", {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: user.id,
-        user_name: user.name, 
-      }),
-    });
+  const response = await sendQuery({
+    query: "",
+    userName: userName,
+    isStartOfConversation: true,
+    userId: userName.replace(" ", "-").toLowerCase(),
+  });
 
-    const data = await response.json();
-
-    setConversation([{ user: { id: user.id, text: "", name: user.name }, assistant: data }]);
-    setIsStarted(true);
-    setIsLoading(false);
-    setRecommendation(null);
-    speak(data.next_question, {
-      language: 'en',
-    });
-
-  } catch (error) {
-    setError(`Error resetting voice assistant: ${(error as Error).message}`);
-    setIsLoading(false);
-  }
+  return response;
 };
 
 // export const startListening = async (props: StartListeningProps) => {
@@ -140,17 +120,30 @@ export const resetVoiceAssistant = async (props: ResetVoiceAssistantProps) => {
 //   }
 // };
 
-export const sendQuery = async (query: string, userId: string) => {
+type SendQueryProps = {
+  query: string;
+  userId: string;
+  userName?: string;
+  isStartOfConversation?: boolean;
+}
+
+export const sendQuery = async (props: SendQueryProps) => {
+  const { query, userId, userName, isStartOfConversation } = props;
+
   try {
+    const endpoint = isStartOfConversation ? "/" : "/conversation";
+    const body = {
+      text: query,
+      user_id: userId,
+      user_name: userName,
+    }
+
     const response = await fetch(
-      `${process.env.EXPO_PUBLIC_RECOMMENDY_API}/conversation`, 
+      `${process.env.EXPO_PUBLIC_RECOMMENDY_API}${endpoint}`, 
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: userId,
-          text: query 
-        })
+        body: JSON.stringify(body)
       }
     );
 

@@ -12,9 +12,9 @@ export const Interaction = (props: InteractionProps) => {
   return (
     <View style={styles.container}>
       <Button
-        isListening={isListening}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
+        isListening={isListening}
       />
       <TouchableOpacity
         style={styles.resetButton}
