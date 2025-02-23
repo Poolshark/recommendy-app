@@ -21,6 +21,7 @@ export const VoiceAssistant = () => {
   const [conversation, setConversation] = useState<ConversationType[]>([]);
   const [error, setError] = useState<string>('');
   const { user } = userStore();
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     // Initialize voice recognition handlers
@@ -62,7 +63,6 @@ export const VoiceAssistant = () => {
 
   const sendQueryToServer = useCallback(async (query: string) => {
     try {
-
       const userObj = {
         id: user?.replace(" ", "-").toLowerCase() || "mr-crumble",
         name: user || "Mr. Crumble",
@@ -77,18 +77,30 @@ export const VoiceAssistant = () => {
       setConversation([...conversation, { user: { id: userObj.id, text: query, name: userObj.name }, assistant: data }]);
       setIsLoading(false);
       
+      setIsSpeaking(true);
       Speech.speak(data.next_question, {
         language: 'en',
+        onDone: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false),
       });
     } catch (err) {
       console.error('Error fetching recommendation:', err);
       setIsLoading(false);
-      Speech.speak('Sorry, I encountered an error while searching for restaurants.');
+      setIsSpeaking(true);
+      Speech.speak('Sorry, I encountered an error while searching for restaurants.', {
+        onDone: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false),
+      });
     }
-  }, [user, conversation]); 
+  }, [user, conversation]);
 
   const startListening = useCallback(async () => {
     try {
+      if (isSpeaking) {
+        Speech.stop();
+        setIsSpeaking(false);
+      }
+
       setError('');
       setIsListening(true);
       setRecognisedText('');
@@ -98,7 +110,7 @@ export const VoiceAssistant = () => {
       setError('Failed to start voice recognition');
       setIsListening(false);
     }
-  }, []);
+  }, [isSpeaking]);
 
   const stopListening = useCallback(async () => {
     try {

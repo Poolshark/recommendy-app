@@ -18,33 +18,41 @@ export const Conversation = (props: ConversationProps) => {
   }, [props.messages]);
 
   return (
-    <ScrollView 
-      ref={scrollViewRef}
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      {props.messages.length > 0 ?
-        props.messages.map((message, index) => {
-          return (
-            <View key={index}>
-              {index !== 0 && 
+    <View style={styles.container}>
+      <ScrollView 
+        ref={scrollViewRef}
+        style={styles.messageContainer}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: 60 }}
+        contentInset={{ bottom: 30 }}
+        automaticallyAdjustContentInsets={false}
+        onContentSizeChange={() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        }}
+      >
+        {props.messages.length > 0 ?
+          props.messages.map((message, index) => {
+            return (
+              <View key={index}>
+                {index !== 0 && 
+                  <Message
+                    isUser={true}
+                    message={message.request}
+                  />
+                }
                 <Message
-                  isUser={true}
-                  message={message.request}
+                  message={message.question}
                 />
-              }
-              <Message
-                message={message.question}
-              />
-            </View>
-          );
-        })
-      :
-      <View style={styles.empty}>
-        <Text style={styles.emptyText}>Press and hold the button to start the conversation.</Text>
-        <Text style={styles.emptyText}>Press reset to start over.</Text>
-      </View>
-      }
-    </ScrollView>
+              </View>
+            );
+          })
+        :
+        <View style={styles.empty}>
+          <Text style={styles.emptyText}>Press and hold the button to start the conversation.</Text>
+          <Text style={styles.emptyText}>Press reset to start over.</Text>
+        </View>
+        }
+      </ScrollView>
+    </View>
   );
 };
