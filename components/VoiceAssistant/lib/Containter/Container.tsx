@@ -1,5 +1,5 @@
 import { styles } from "./styles";
-import { ImageBackground, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import type { ContainerProps } from "./types";
 

@@ -79,6 +79,7 @@ export const useVoiceRecording = () => {
     error,
     isListening,
     isSpeaking,
+    setRecognisedText,
     recognisedText,
     startListening,
     stopListening,

@@ -20,10 +20,12 @@ export const VoiceAssistant = () => {
     recognisedText, 
     startListening, 
     stopListening, 
-    speak 
+    speak,
+    setRecognisedText 
   } = useVoiceRecording();
   const [isLoading, setIsLoading] = useState(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [isRecommending, setIsRecommending] = useState<boolean>(true);
   const [conversation, setConversation] = useState<ConversationType[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>();
   
@@ -39,10 +41,12 @@ export const VoiceAssistant = () => {
         userName: userName,
       }).then(res => {
         setIsLoading(false);
-        if ("recommendations" in res && res.recommendations.length > 0) {
+        if ("recommendations" in res && res.recommendations.length > 0 && isRecommending) {
           speak(
             `Hey ${userName}, I've found some previous recommendations. Do you want to see them instead of me finding new ones?`, 
-            () => setRecommendations(res.recommendations)
+            () => {
+              setRecommendations(res.recommendations);
+            }
           );
         } else if ("error" in res) {
           speak(res.error);
@@ -50,6 +54,7 @@ export const VoiceAssistant = () => {
           speak(res.next_question, () => {
             setIsStarted(true);
             setRecommendations(undefined);
+            !isRecommending && setIsRecommending(true);
             setConversation([{
               user: {
                 id: userName.replace(" ", "-").toLowerCase(),
@@ -62,17 +67,21 @@ export const VoiceAssistant = () => {
         }
       });
     }
-  }, [isStarted]);
+  }, [isStarted, isRecommending]);
 
   console.log("IS LISTENING", isListening);
 
   useEffect(() => {
     if (recognisedText !== "") {
-      if (recommendations && !isStarted && recognisedText.toLowerCase().includes("yes")) {
-        console.log("RECOMMENDATIONS", recommendations);
-        navigation.navigate('recommendations', { recommendations: recommendations });
-        return;
-      }
+      if (recommendations && !isStarted) {
+        if (recognisedText.toLowerCase().includes("yes")) {
+          navigation.navigate('recommendations', { recommendations: recommendations });
+          return;
+        } else if (recognisedText.toLowerCase().includes("no")) {
+          setRecognisedText("");
+          setIsRecommending(false);
+        }
+      } 
 
       if (isStarted && !isListening) {
         const userObj = {
