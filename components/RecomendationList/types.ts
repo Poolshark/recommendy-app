@@ -16,6 +16,9 @@ export type Recommendations = {
   price_level?: number;
   address: string;
   place_id?: string;
+  photo_url?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export type RecommendationRoute = {

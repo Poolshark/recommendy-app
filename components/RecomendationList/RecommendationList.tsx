@@ -1,7 +1,8 @@
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import { useNavigation } from "expo-router";
 
 import type { RecommendationRoute } from "./types";
+import { styles } from "./styles";
 
 export const RecommendationList = () => {
 
@@ -10,8 +11,12 @@ export const RecommendationList = () => {
   const { recommendations } = route?.params as RecommendationRoute;
 
   return recommendations.map((recommendation) => (
-    <View>
-      <Text>{recommendation.restaurant_name}</Text>
+    <View style={styles.container}>
+      <Image source={{ uri: recommendation.photo_url }} style={styles.image} />
+      <View style={styles.info}>
+        <Text>{recommendation.restaurant_name}</Text>
+        <Text>{recommendation.location}</Text>
+      </View>
     </View>
   ));
 };
