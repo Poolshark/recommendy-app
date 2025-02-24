@@ -3,13 +3,11 @@ import { Container } from './lib/Containter';
 import { Interaction } from './lib/Interaction';
 import { Conversation } from './lib/Conversation';
 import { resetVoiceAssistant, sendQuery } from './helpers';
-
-import type { ConversationType, Recommendation } from './types';
-import { StartScreen } from './lib/StartScreen/StartScreen';
 import { userStore } from '@/store';
 import { useNavigation } from 'expo-router';
-import type { RecommendationParams } from '@/app/(tabs)/recommendations';
 import { useVoiceRecording } from './hooks/useVoiceRecording';
+
+import type { ConversationType, Recommendation } from './types';
 
 
 
@@ -70,8 +68,9 @@ export const VoiceAssistant = () => {
 
   useEffect(() => {
     if (recognisedText !== "") {
-      if (recommendations && !isStarted && recognisedText.includes("yes")) {
-        navigation.navigate('recommendations', recommendations);
+      if (recommendations && !isStarted && recognisedText.toLowerCase().includes("yes")) {
+        console.log("RECOMMENDATIONS", recommendations);
+        navigation.navigate('recommendations', { recommendations: recommendations });
         return;
       }
 
@@ -88,7 +87,7 @@ export const VoiceAssistant = () => {
         }).then(res => {
           setIsLoading(false);
           if (res.recommendation) {
-            navigation.navigate('recommendations', [res.recommendation]);
+            navigation.navigate('recommendations', { recommendations:[res.recommendation] });
             return;
           }
           setConversation([...conversation, { user: { id: userObj.id, text: recognisedText, name: userObj.name }, assistant: res }]);

@@ -22,7 +22,7 @@ export default function TabLayout() {
         options={{ 
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
+            <Ionicons name={focused ? 'mic-circle-sharp' : 'mic-circle-outline'} color={color} size={32} />
           ),
         }} 
       />
@@ -31,7 +31,7 @@ export default function TabLayout() {
         options={{ 
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
+            <Ionicons name={focused ? 'list-circle-sharp' : 'list-circle-outline'} color={color} size={32} />
           ),
         }} 
       />
