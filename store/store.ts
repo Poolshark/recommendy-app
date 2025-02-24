@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 
-// Simple store implementation
+/**
+ * -----------------------------------------
+ * USER STORE
+ * -----------------------------------------
+ * A simple store implementation to manage the user's name.
+ * 
+ * @returns {Object} An object containing the user's name and
+ * a function to set the user's name.
+ */
 class UserStore {
   private static instance: UserStore;
   private subscribers: Set<(user: string | undefined) => void>;
@@ -18,15 +26,18 @@ class UserStore {
     return UserStore.instance;
   }
 
+  // Getter - Returns the current user's name
   getUser() {
     return this.currentUser;
   }
 
+  // Setter - Sets the current user's name
   setUser(user: string) {
     this.currentUser = user;
     this.notifySubscribers();
   }
 
+  // Subscribes to the store updates
   subscribe(callback: (user: string | undefined) => void) {
     this.subscribers.add(callback);
     return () => {
@@ -34,6 +45,7 @@ class UserStore {
     };
   }
 
+  // Notifies the subscribers of the store updates
   private notifySubscribers() {
     this.subscribers.forEach(callback => callback(this.currentUser));
   }
@@ -42,7 +54,15 @@ class UserStore {
 // Create a single instance
 const store = UserStore.getInstance();
 
-// Hook to use the store
+/**
+ * -----------------------------------------
+ * USER STORE HOOK
+ * -----------------------------------------
+ * A hook to use the user store.
+ * 
+ * @returns {Object} An object containing the user's name and
+ * a function to set the user's name.
+ */
 export const userStore = () => {
   const [user, setUser] = useState(store.getUser());
 
