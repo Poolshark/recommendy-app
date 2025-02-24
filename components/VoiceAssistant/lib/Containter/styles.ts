@@ -7,16 +7,12 @@ export const styles = StyleSheet.create({
     width: "100%",
     gridAutoRows: "1fr",
     gridAutoColumns: "1fr",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   error: {
     flex: 1,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  wrapper: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   }
 });

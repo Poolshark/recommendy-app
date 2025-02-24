@@ -1,27 +1,26 @@
 import { userStore } from "@/store/store";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { 
-  Button, 
   TextInput, 
   View, 
   KeyboardAvoidingView, 
   Platform,
-  StyleSheet 
+  Pressable,
+  Text
 } from "react-native";
+import { styles } from "./styles";
 
 export const UserForm = () => {
-  const { user, setNewUser } = userStore();
+  const { setNewUser } = userStore();
   const [text, setText] = useState("");
 
-  const handleInputChange = (text: string) => {
+  const handleInputChange = useCallback((text: string) => {
     setText(text);
-  }
+  }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     setNewUser(text);
-  }
-
-  console.log("IN USER FORM", user);
+  }, [text]);
 
   return (
     <KeyboardAvoidingView
@@ -29,43 +28,27 @@ export const UserForm = () => {
       style={styles.container}
     >
       <View style={styles.formContainer}>
+        <Text style={styles.intro}>
+          Hey there!
+          Please enter your name to continue.
+        </Text>
         <TextInput
-          style={styles.input}
-          onChangeText={handleInputChange}
           value={text}
-          placeholder="Enter your name"
-          placeholderTextColor="#666"
-          autoCapitalize="none"
           autoCorrect={false}
+          style={styles.input}
+          autoCapitalize="none"
+          placeholderTextColor="#666"
+          placeholder="Enter your name"
           enablesReturnKeyAutomatically
+          onChangeText={handleInputChange}
         />
-        <Button
-          title="Submit"
+        <Pressable
+          style={styles.button}
           onPress={handleSubmit}
-        />
+        >
+          <Text style={styles.buttonText}>Submit</Text>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  formContainer: {
-    padding: 20,
-    width: '100%',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: 'white',
-  }
-});

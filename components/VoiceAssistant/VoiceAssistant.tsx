@@ -1,10 +1,10 @@
+import { userStore } from '@/store';
+import { useNavigation } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { Container } from './lib/Containter';
 import { Interaction } from './lib/Interaction';
 import { Conversation } from './lib/Conversation';
 import { resetVoiceAssistant, sendQuery } from './helpers';
-import { userStore } from '@/store';
-import { useNavigation } from 'expo-router';
 import { useVoiceRecording } from './hooks/useVoiceRecording';
 
 import type { ConversationType, Recommendation } from './types';

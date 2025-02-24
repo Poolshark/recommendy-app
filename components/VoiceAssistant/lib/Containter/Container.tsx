@@ -14,17 +14,8 @@ export const Container = (props: ContainerProps) => {
   }
 
   return (
-    <ImageBackground 
-        source={require('../../../../assets/images/bg-portrait.jpg')} 
-        style={styles.container}
-        resizeMode="cover"
-        imageStyle={{
-          opacity: 0.8,
-        }}
-      >
-        <View style={styles.wrapper}>
-          {props.children}
-        </View>
-    </ImageBackground>
+    <View style={styles.container}>
+      {props.children}
+    </View>
   );
 };
