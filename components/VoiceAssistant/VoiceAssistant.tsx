@@ -7,12 +7,22 @@ import { Conversation } from './lib/Conversation';
 import { resetVoiceAssistant, sendQuery } from './helpers';
 import { useVoiceRecording } from './hooks/useVoiceRecording';
 
-import type { ConversationType, Recommendation } from './types';
+import type { ConversationType } from './types';
+import type { Recommendation } from '../RecomendationList/types';
 
-
-
+/**
+ * -----------------------------------------
+ * VOICE ASSISTANT
+ * -----------------------------------------
+ * Displays a voice assistant component for the app.
+ * The component will display a conversation with the
+ * voice assistant and a button for the user to start
+ * and stop the voice recording.
+ * 
+ * @returns {JSX.Element} The VoiceAssistant component.
+ */
 export const VoiceAssistant = () => {
-  const navigation = useNavigation<any>(); // Temporary fix with 'any'
+  const navigation = useNavigation<any>();
   const { user } = userStore();
   const { 
     error, 
@@ -31,6 +41,11 @@ export const VoiceAssistant = () => {
   
   console.log("RECOGNISED TEXT", recognisedText);
 
+  // Handles the voice assistant's initialisation
+  // This is the first time the voice assistant is being used
+  // so we need to reset it and get the recommendations. If 
+  // no recommendations are found, the voice assistant will
+  // start the conversation.
   useEffect(() => {
     if (isStarted === false) {
       setIsLoading(true);
@@ -71,7 +86,14 @@ export const VoiceAssistant = () => {
 
   console.log("IS LISTENING", isListening);
 
+  // Handles the voice assistant's conversation
+  // This is when the voice assistant is at the start or
+  // in the middle of a conversation with the user.
   useEffect(() => {
+
+    // Handles the voice assistant's response to the user's initial
+    // response to the voice assistant's question if he should present
+    // previous recommendations.
     if (recognisedText !== "") {
       if (recommendations && !isStarted) {
         if (recognisedText.toLowerCase().includes("yes")) {
@@ -83,6 +105,8 @@ export const VoiceAssistant = () => {
         }
       } 
 
+      // Handles the voice assistant's response to the user's
+      // response to the voice assistant's questions.
       if (isStarted && !isListening) {
         const userObj = {
           id: user?.replace(" ", "-").toLowerCase() || "mr-crumble",

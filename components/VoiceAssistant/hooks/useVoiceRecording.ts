@@ -1,7 +1,20 @@
+import * as Speech from 'expo-speech';
 import { useState, useEffect, useCallback } from 'react';
 import Voice from '@react-native-voice/voice';
-import * as Speech from 'expo-speech';
 
+/**
+ * -----------------------------------------
+ * VOICE RECORDING HOOK
+ * -----------------------------------------
+ * Handles the voice recording functionality.
+ * The hook will start the voice recording, stop
+ * the voice recording, and speak the recognised
+ * text.
+ * 
+ * @returns {Object} An object containing the error,
+ * isListening, isSpeaking, recognisedText, and
+ * startListening and stopListening functions.
+ */
 export const useVoiceRecording = () => {
   const [error, setError] = useState<string>('');
   const [isListening, setIsListening] = useState(false);
@@ -9,6 +22,7 @@ export const useVoiceRecording = () => {
   const [recognisedText, setRecognisedText] = useState('');
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
+  // Set up the voice recording listeners
   useEffect(() => {
     Voice.onSpeechStart = () => setIsListening(true);
     Voice.onSpeechEnd = () => {
@@ -30,6 +44,7 @@ export const useVoiceRecording = () => {
     };
   }, []);
 
+  // Start the voice recording (when the button is pressed)
   const startListening = useCallback(async () => {
     try {
       if (isButtonPressed) return;
@@ -51,6 +66,7 @@ export const useVoiceRecording = () => {
     }
   }, [isSpeaking, isButtonPressed]);
 
+  // Stop the voice recording (when the button is released)
   const stopListening = useCallback(async () => {
     try {
       if (!isButtonPressed) return;
@@ -63,6 +79,7 @@ export const useVoiceRecording = () => {
     }
   }, [isButtonPressed]);
 
+  // Speak the recognised text
   const speak = useCallback((text: string, onDone?: () => void) => {
     setIsSpeaking(true);
     Speech.speak(text, {
@@ -77,12 +94,12 @@ export const useVoiceRecording = () => {
 
   return {
     error,
-    isListening,
+    speak,
     isSpeaking,
-    setRecognisedText,
+    isListening,
+    stopListening,
     recognisedText,
     startListening,
-    stopListening,
-    speak,
+    setRecognisedText,
   };
 }; 

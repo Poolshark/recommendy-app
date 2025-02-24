@@ -5,9 +5,21 @@ import { useRef, useEffect } from 'react';
 
 import type { ConversationProps } from "./types";
 
+/**
+ * -----------------------------------------
+ * CONVERSATION
+ * -----------------------------------------
+ * Displays a conversation between the user and the assistant.
+ * The conversation will display the user's messages and the
+ * assistant's messages.
+ * 
+ * @param {ConversationProps} props - The props for the Conversation component.
+ * @returns {JSX.Element} The Conversation component.
+ */ 
 export const Conversation = (props: ConversationProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // Handles the scrolling behaviour of the conversation
   useEffect(() => {
     // Scroll to bottom whenever messages change
     if (scrollViewRef.current && props.messages.length > 0) {

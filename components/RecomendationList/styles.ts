@@ -15,11 +15,18 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     padding: 10,
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  infoDate: {
+    fontSize: 12,
+  },
+  infoAddress: {
+    fontSize: 12,
+    color: '#444',
   }
 });

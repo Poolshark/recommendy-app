@@ -10,6 +10,18 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 
+/**
+ * -----------------------------------------
+ * USER FORM
+ * -----------------------------------------
+ * Displays a form for the user to enter their name.
+ * The form will be displayed when the user first opens
+ * the app. The form will be used to store the user's
+ * name in the database and assign past recommendations
+ * to the user.
+ * 
+ * @returns {JSX.Element} The UserForm component.
+ */
 export const UserForm = () => {
   const { setNewUser } = userStore();
   const [text, setText] = useState("");

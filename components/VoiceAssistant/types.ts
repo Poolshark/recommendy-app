@@ -1,14 +1,3 @@
-import type { speak } from 'expo-speech';
-import type Voice from '@react-native-voice/voice';
-import type { Dispatch, SetStateAction } from "react";
-
-export type Recommendation = {
-  name: string;
-  address: string;
-  rating: number;
-  priceLevel?: string;
-}
-
 export type ConversationType = {
   user: {
     id: string;
@@ -32,30 +21,11 @@ export type ResetVoiceAssistantProps = {
   userName: string;
 };
 
-export type StartListeningProps = {
-  Voice: typeof Voice;
-  setError: Dispatch<SetStateAction<string>>;
-  setIsListening: Dispatch<SetStateAction<boolean>>;
-  setRecognizedText: Dispatch<SetStateAction<string>>
-};
-
-
-export interface SendQueryToServerProps {
-  user: {
-    id: string;
-    name: string;
-  }
+export type SendQueryProps = {
   query: string;
-  speak: typeof speak;
-  conversation: ConversationType[];
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  setConversation: Dispatch<SetStateAction<ConversationType[]>>;
-};
-
-export interface StopListeningProps extends SendQueryToServerProps {
-  stop: typeof Voice.stop;
-  recognisedText: string;
-  setIsListening: Dispatch<SetStateAction<boolean>>;
-};
+  userId: string;
+  userName?: string;
+  isStartOfConversation?: boolean;
+}
 
 

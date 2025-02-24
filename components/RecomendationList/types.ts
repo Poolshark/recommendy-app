@@ -1,4 +1,4 @@
-export type Recommendations = {
+export type Recommendation = {
   id: number;
   user_id: string;
   user_name?: string;
@@ -8,7 +8,7 @@ export type Recommendations = {
   guests?: number;
   dietary?: string;
   booking_time?: string;
-  created_at?: string;
+  created_at: string;
   atmosphere?: string;
   budget?: string;
   rating?: number
@@ -19,8 +19,10 @@ export type Recommendations = {
   photo_url?: string;
   latitude?: number;
   longitude?: number;
+  website_url?: string;
+  maps_url?: string;
 }
 
 export type RecommendationRoute = {
-  recommendations: Recommendations[];
+  recommendations: Recommendation[];
 }
