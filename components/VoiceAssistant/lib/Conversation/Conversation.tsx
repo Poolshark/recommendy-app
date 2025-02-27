@@ -1,7 +1,7 @@
 import { styles } from "./styles";
-import { ScrollView, Text, View } from "react-native";
 import { Message } from "./lib/Message";
 import { useRef, useEffect } from 'react';
+import { ScrollView, Text, View } from "react-native";
 
 import type { ConversationProps } from "./types";
 
@@ -33,11 +33,11 @@ export const Conversation = (props: ConversationProps) => {
     <View style={styles.container}>
       <ScrollView 
         ref={scrollViewRef}
+        contentInset={{ bottom: 30 }}
         style={styles.messageContainer}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 60 }}
-        contentInset={{ bottom: 30 }}
         automaticallyAdjustContentInsets={false}
+        contentContainerStyle={{ paddingTop: 60 }}
         onContentSizeChange={() => {
           scrollViewRef.current?.scrollToEnd({ animated: true });
         }}

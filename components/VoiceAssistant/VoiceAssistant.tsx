@@ -1,4 +1,5 @@
 import { userStore } from '@/store';
+import { Loading } from './lib/Loading';
 import { useNavigation } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { Container } from './lib/Containter';
@@ -50,6 +51,8 @@ export const VoiceAssistant = () => {
     if (isStarted === false) {
       setIsLoading(true);
       setConversation([]);
+      setRecognisedText("");
+      setRecommendations(undefined);
       const userName = user || "Mr. Crumble";
 
       resetVoiceAssistant({ 
@@ -132,10 +135,14 @@ export const VoiceAssistant = () => {
 
   return (
     <Container error={error}>
-      <Conversation messages={conversation.map(c => ({
-        request: c.user.text,
-        question: c.assistant.next_question,
-      }))} />
+      {
+        isLoading ?
+        <Loading /> :
+        <Conversation messages={conversation.map(c => ({
+          request: c.user.text,
+          question: c.assistant.next_question,
+        }))} />
+      }
       <Interaction 
         isListening={isListening}
         onPressIn={startListening}

@@ -57,7 +57,7 @@ export const useVoiceRecording = () => {
       setError('');
       setIsListening(true);
       setRecognisedText('');
-      await Voice.start('en-US');
+      await Voice.start('en-GB');
     } catch (error) {
       console.error('Error starting voice:', error);
       setError('Failed to start voice recognition');

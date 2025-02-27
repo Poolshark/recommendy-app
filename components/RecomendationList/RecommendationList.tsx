@@ -1,9 +1,9 @@
 import { styles } from "./styles";
 import { useNavigation } from "expo-router";
 import { Image, Text, View } from "react-native";
+import { CTA, PriceRange, StarRating } from "./lib";
 
 import type { RecommendationRoute } from "./types";
-import { CTA, PriceRange, StarRating } from "./lib";
 
 /**
  * -----------------------------------------
